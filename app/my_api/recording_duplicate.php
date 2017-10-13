@@ -82,9 +82,9 @@ if (!$moving_path or $moving_path == "") {
 }
 
 // Get last data here
-$sql = "SELECT json";
+$sql = "SELECT uuid, json";
 $sql .= " FROM my_api_data WHERE";
-$sql .= " domain_uuid = '".$domain_uuid."'";
+$sql .= " domain_uuid = '".$domain_uuid."' AND api_name = 'recording_duplicate'";
 
 $prep_statement = $db->prepare(check_sql($sql));
 $prep_statement->execute();
@@ -94,9 +94,10 @@ unset ($prep_statement, $sql);
 $last_timestamp = "0";
 
 if (count($db_result) > 0 && $db_result) { // Assume no data is received
-    $last_timestamp = $db_result['json'];
-    $last_timestamp = json_decode($last_timestamp);
+    $current_api_data = $db_result['json'];
+    $current_api_data = json_decode($current_api_data);
     $last_timestamp = $start_date['last_timestamp'];
+    $last_timestamp_uuid = $db_result['uuid'];
 }
 
 unset($db_result);
@@ -119,12 +120,12 @@ if (count($db_result) == 0) {
 }
 
 // Reset last_timestamp
-$last_timestamp = 0;
+$new_last_timestamp = 0;
 
 foreach ($db_result as $cdr_line) {
 
-    if ($cdr_line['start_epoch'] > $last_timestamp) {
-        $last_timestamp = $cdr_line['start_epoch'];
+    if ($cdr_line['start_epoch'] > $new_last_timestamp) {
+        $new_last_timestamp = $cdr_line['start_epoch'];
     }
     $json_cdr_line = json_decode($cdr_line['json'], true);
 
@@ -174,6 +175,28 @@ foreach ($db_result as $cdr_line) {
     }
 }
 
-// Not forget to save new $last_timestamp
+if ($new_last_timestamp > $last_timestamp) {
+    $last_timestamp = $new_last_timestamp;
+}
 
+if (isset($last_timestamp_uuid)) { // Here we know about last timestamp
+    $current_api_data['last_timestamp'] = $last_timestamp;
+    $current_api_data = json_encode($current_api_data);
+    $sql = "UPDATE my_api_data SET";
+    $sql .= " json = '".$current_api_data."'";
+    $sql .= " WHERE uuid = '".$last_timestamp_uuid."'";
+} else {
+    $current_api_data = array('last_timestamp' => $last_timestamp);
+    $current_api_data = json_encode($current_api_data);
+    $sql = "INSERT INTO my_api_data";
+    $sql .= "(uuid, domain_uuid, api_name, json)";
+    $sql .= " VALUES (";
+    $sql .= " '".uuid()."',";
+    $sql .= " '".$domain_uuid."',";
+    $sql .= " 'recording_duplicate',";
+    $sql .= "'".$current_api_data."'";
+}
+$prep_statement = $db->prepare(check_sql($sql));
+$prep_statement->execute();
+unset ($prep_statement, $sql);
 ?>
