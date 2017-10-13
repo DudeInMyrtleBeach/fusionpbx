@@ -170,7 +170,7 @@ foreach ($db_result as $cdr_line) {
         print("Creating dir $new_file_path\n");
         mkdir($new_file_path, 0777, true);
         print("Copying file $recording_file_path -> $new_file_path_full\n");
-
+        copy($recording_file_path, $new_file_path_full);
     }
 }
 
