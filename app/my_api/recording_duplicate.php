@@ -38,6 +38,7 @@ include "resources/classes/functions.php";
 // @json - json data
 
 // Moving path allows following templates
+// [DOMAIN] - Actual domain name
 // [YEAR] - Year of recording
 // [MONTH] - Month of recording
 // [DAY] - Day of recording
@@ -47,7 +48,7 @@ include "resources/classes/functions.php";
 // [DURATION] - Duration of recording
 // [EXT] - Extension. Actually, mandatory
 
-function prepare_filepath($timestamp, $path, $callerid_name, $callerid_number, $duration = "") {
+function prepare_filepath($timestamp, $path, $callerid_name, $callerid_number, $duration, $domain) {
     $tmp_year = date("Y", $timestamp);
     $tmp_month = date("M", $timestamp);
     $tmp_day = date("d", $timestamp);
@@ -60,6 +61,7 @@ function prepare_filepath($timestamp, $path, $callerid_name, $callerid_number, $
     $result = str_replace('[CLID_NAME]', $$callerid_name, $result);
     $result = str_replace('[CLID_NUMBER]', $callerid_number, $result);
     $result = str_replace('[DURATION]', $duration, $result);
+    $result = str_replace('[DOMAIN]', $domain, $result);
 
     return $result;
 }
@@ -89,13 +91,14 @@ $prep_statement->execute();
 $db_result = $prep_statement->fetch(PDO::FETCH_ASSOC);
 unset ($prep_statement, $sql);
 
-if (count($db_result) == 0) { // Assume no data is received
-    $last_timestamp = 0;
-} else {
+$last_timestamp = "0";
+
+if (count($db_result) > 0 && $db_result) { // Assume no data is received
     $last_timestamp = $db_result['json'];
     $last_timestamp = json_decode($last_timestamp);
     $last_timestamp = $start_date['last_timestamp'];
 }
+
 unset($db_result);
 
 // Get ALL CDR's here
@@ -154,15 +157,19 @@ foreach ($db_result as $cdr_line) {
         $tmp_name = $cdr_line['bridge_uuid']."_1.mp3"; 
     }
     if (strlen($tmp_name) > 0 && file_exists($tmp_dir.'/'.$tmp_name) && $seconds > 0) { // Recording file found
-        $recording_file_path = $tmp_rel_path.'/'.$tmp_name;
+        $recording_file_path = $tmp_dir.'/'.$tmp_name;
         $recording_file_name = strtolower(pathinfo($tmp_name, PATHINFO_BASENAME));
         $recording_file_ext = pathinfo($recording_file_name, PATHINFO_EXTENSION);
 
-        $new_file_path = prepare_filepath($cdr_line['start_epoch'], $moving_path, $cdr_line['caller_id_name'], $cdr_line['caller_id_number'], $cdr_line['duration']);
-        $new_file_path = str_replace("[EXT]",$recording_file_ext, $new_file_path);
+        $new_file_path_full = prepare_filepath($cdr_line['start_epoch'], $moving_path, $cdr_line['caller_id_name'], $cdr_line['caller_id_number'], $cdr_line['duration'], $_SESSION['domain_name']);
+        $new_file_path_full = str_replace("[EXT]",$recording_file_ext, $new_file_path_full);
 
         // Just printing here
-        print("File $recording_file_name -> $new_file_path\n");
+        $new_file_path = pathinfo($new_file_path_full, PATHINFO_DIRNAME);
+
+        print("Creating dir $new_file_path\n");
+        print("Copying file $recording_file_name -> $new_file_path_full\n");
+
     }
 }
 
