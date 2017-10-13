@@ -74,7 +74,7 @@ if ($domain_uuid == "") {
     exit;
 }
 
-$moving_path = isset($_SESSION['external_storage']['record_path']['text'])?$_SESSION['external_storage']['record_path']['text']:False;
+$moving_path = isset($_SESSION['external storage']['record_path']['text'])?$_SESSION['external storage']['record_path']['text']:False;
 
 if (!$moving_path or $moving_path == "") {
     send_api_answer("503", "Storage path not found");
