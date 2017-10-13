@@ -95,8 +95,8 @@ $last_timestamp = "0";
 
 if (count($db_result) > 0 && $db_result) { // Assume no data is received
     $current_api_data = $db_result['json'];
-    $current_api_data = json_decode($current_api_data);
-    $last_timestamp = $start_date['last_timestamp'];
+    $current_api_data = json_decode($current_api_data, true);
+    $last_timestamp = $current_api_data['last_timestamp'];
     $last_timestamp_uuid = $db_result['uuid'];
 }
 
