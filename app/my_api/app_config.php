@@ -11,7 +11,7 @@
 	//schema details
 		$y = 0; //table array index
 		$z = 0; //field array index
-		$apps[$x]['db'][$y]['table'] = "my_api_data";
+		$apps[$x]['db'][$y]['table'] = "v_my_api_data";
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "domain_uuid";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";

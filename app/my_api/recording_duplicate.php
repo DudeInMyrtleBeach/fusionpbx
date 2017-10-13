@@ -83,7 +83,7 @@ if (!$moving_path or $moving_path == "") {
 
 // Get last data here
 $sql = "SELECT uuid, json";
-$sql .= " FROM my_api_data WHERE";
+$sql .= " FROM v_my_api_data WHERE";
 $sql .= " domain_uuid = '".$domain_uuid."' AND api_name = 'recording_duplicate'";
 
 $prep_statement = $db->prepare(check_sql($sql));
@@ -182,13 +182,13 @@ if ($new_last_timestamp > $last_timestamp) {
 if (isset($last_timestamp_uuid)) { // Here we know about last timestamp
     $current_api_data['last_timestamp'] = $last_timestamp;
     $current_api_data = json_encode($current_api_data);
-    $sql = "UPDATE my_api_data SET";
+    $sql = "UPDATE v_my_api_data SET";
     $sql .= " json = '".$current_api_data."'";
     $sql .= " WHERE uuid = '".$last_timestamp_uuid."'";
 } else {
     $current_api_data = array('last_timestamp' => $last_timestamp);
     $current_api_data = json_encode($current_api_data);
-    $sql = "INSERT INTO my_api_data";
+    $sql = "INSERT INTO v_my_api_data";
     $sql .= "(uuid, domain_uuid, api_name, json)";
     $sql .= " VALUES (";
     $sql .= " '".uuid()."',";
@@ -196,6 +196,7 @@ if (isset($last_timestamp_uuid)) { // Here we know about last timestamp
     $sql .= " 'recording_duplicate',";
     $sql .= "'".$current_api_data."'";
 }
+print($sql."\n");
 $prep_statement = $db->prepare(check_sql($sql));
 $prep_statement->execute();
 unset ($prep_statement, $sql);
