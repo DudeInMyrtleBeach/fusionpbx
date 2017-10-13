@@ -120,7 +120,7 @@ if (count($db_result) == 0) {
 }
 
 // Reset last_timestamp
-$new_last_timestamp = 0;
+$new_last_timestamp = $last_timestamp;
 
 foreach ($db_result as $cdr_line) {
 
@@ -168,9 +168,7 @@ foreach ($db_result as $cdr_line) {
         // Just printing here
         $new_file_path = pathinfo($new_file_path_full, PATHINFO_DIRNAME);
 
-        print("Creating dir $new_file_path\n");
         mkdir($new_file_path, 0777, true);
-        print("Copying file $recording_file_path -> $new_file_path_full\n");
         copy($recording_file_path, $new_file_path_full);
     }
 }
@@ -196,8 +194,10 @@ if (isset($last_timestamp_uuid)) { // Here we know about last timestamp
     $sql .= " 'recording_duplicate',";
     $sql .= "'".$current_api_data."')";
 }
-print($sql."\n");
 $prep_statement = $db->prepare(check_sql($sql));
 $prep_statement->execute();
 unset ($prep_statement, $sql);
+
+$
+
 ?>
