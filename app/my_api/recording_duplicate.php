@@ -194,7 +194,7 @@ if (isset($last_timestamp_uuid)) { // Here we know about last timestamp
     $sql .= " '".uuid()."',";
     $sql .= " '".$domain_uuid."',";
     $sql .= " 'recording_duplicate',";
-    $sql .= "'".$current_api_data."'";
+    $sql .= "'".$current_api_data."')";
 }
 print($sql."\n");
 $prep_statement = $db->prepare(check_sql($sql));
