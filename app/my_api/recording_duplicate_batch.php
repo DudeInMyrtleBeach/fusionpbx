@@ -47,7 +47,7 @@ foreach ($db_result as $domain_info) {
     curl_setopt($curl_init,CURLOPT_NOBODY,true);
     curl_setopt($curl_init,CURLOPT_CONNECTTIMEOUT,60);
     $curl_response = curl_exec($curl_init);
-    print("Processing $domain_name\n$curl_response\n");
+    print("Processing $domain_name...\n$curl_response\n");
     curl_close($curl_init);
 }
 
