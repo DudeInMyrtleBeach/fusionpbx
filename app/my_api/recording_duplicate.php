@@ -41,18 +41,23 @@ include "resources/classes/functions.php";
 // [DOMAIN] - Actual domain name
 // [YEAR] - Year of recording
 // [MONTH] - Month of recording
-// [DAY] - Day of recording
+// [DAY] - Day of recording (number)
 // [TIME] - Time of recording
 // [CLID_NAME] - CallerID name of source
 // [CLID_NUMBER] - CallerID number of source
 // [DURATION] - Duration of recording
+// [DOMAIN] - Domain name
+// [DAY_N] - Day Name, ex Mon, Tue...
+// [DIRECTION] - Direction of the call (local, inbound, outbound)
+// [DESTINATION] - Destination of the call
 // [EXT] - Extension. Actually, mandatory
 
-function prepare_filepath($timestamp, $path, $callerid_name, $callerid_number, $duration, $domain) {
+function prepare_filepath($timestamp, $path, $callerid_name, $callerid_number, $duration, $domain, $direction, $destination) {
     $tmp_year = date("Y", $timestamp);
     $tmp_month = date("M", $timestamp);
     $tmp_day = date("d", $timestamp);
     $tmp_time = date("H-i-s", $timestamp);
+    $tmp_day_n = date("D", $timestamp);
     $result = $path;
     $result = str_replace('[YEAR]', $tmp_year, $result);
     $result = str_replace('[MONTH]', $tmp_month, $result);
@@ -62,7 +67,11 @@ function prepare_filepath($timestamp, $path, $callerid_name, $callerid_number, $
     $result = str_replace('[CLID_NUMBER]', $callerid_number, $result);
     $result = str_replace('[DURATION]', $duration, $result);
     $result = str_replace('[DOMAIN]', $domain, $result);
-
+    $result = str_replace('[DAY_N]', $tmp_day_n, $result);
+    $result = str_replace('[DIRECTION]', $direction, $result);
+    $result = str_replace('[DESTINATION]', $destination, $result);
+    // Cleanup string if any
+    $result = preg_replace("/[^0-9a-zA-Z-]/","_",$result);
     return $result;
 }
 
@@ -91,7 +100,7 @@ $prep_statement->execute();
 $db_result = $prep_statement->fetch(PDO::FETCH_ASSOC);
 unset ($prep_statement, $sql);
 
-$last_timestamp = "0";
+$last_timestamp = (string)time();
 
 if (count($db_result) > 0 && $db_result) { // Assume no data is received
     $current_api_data = $db_result['json'];
@@ -104,7 +113,7 @@ unset($db_result);
 
 // Get ALL CDR's here
 // Get CDR's here
-$sql = "SELECT caller_id_name, caller_id_number, duration, json, uuid, bridge_uuid, hangup_cause, billmsec, start_epoch";
+$sql = "SELECT caller_id_name, caller_id_number, duration, json, uuid, bridge_uuid, hangup_cause, billmsec, start_epoch, destination_number, direction";
 $sql .= " FROM v_xml_cdr WHERE";
 $sql .= " (start_epoch > '".$last_timestamp."') AND";
 $sql .= " (domain_uuid = '".$domain_uuid."')";
@@ -116,7 +125,6 @@ unset ($prep_statement, $sql);
 
 if (count($db_result) == 0) {
     send_api_answer("404", "No records found starting from stamp ".$last_timestamp);
-    exit;
 }
 
 // Reset last_timestamp
@@ -162,7 +170,7 @@ foreach ($db_result as $cdr_line) {
         $recording_file_name = strtolower(pathinfo($tmp_name, PATHINFO_BASENAME));
         $recording_file_ext = pathinfo($recording_file_name, PATHINFO_EXTENSION);
 
-        $new_file_path_full = prepare_filepath($cdr_line['start_epoch'], $moving_path, $cdr_line['caller_id_name'], $cdr_line['caller_id_number'], $cdr_line['duration'], $_SESSION['domain_name']);
+        $new_file_path_full = prepare_filepath($cdr_line['start_epoch'], $moving_path, $cdr_line['caller_id_name'], $cdr_line['caller_id_number'], $cdr_line['duration'], $_SESSION['domain_name'], $cdr_line['direction'], $cdr_line['destination_number']);
         $new_file_path_full = str_replace("[EXT]",$recording_file_ext, $new_file_path_full);
 
         // Just printing here

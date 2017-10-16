@@ -46,6 +46,8 @@ foreach ($db_result as $domain_info) {
     $curl_init = curl_init($curl_path);
     curl_setopt($curl_init,CURLOPT_CONNECTTIMEOUT,60);
     curl_setopt($curl_init,CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($curl_init, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($curl_init, CURLOPT_SSL_VERIFYPEER, 0);
     $curl_response = curl_exec($curl_init);
     print("Processing $domain_name...via $curl_path\n$curl_response\n");
     curl_close($curl_init);
