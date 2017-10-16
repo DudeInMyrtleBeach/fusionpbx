@@ -198,6 +198,4 @@ $prep_statement = $db->prepare(check_sql($sql));
 $prep_statement->execute();
 unset ($prep_statement, $sql);
 
-$
-
 ?>

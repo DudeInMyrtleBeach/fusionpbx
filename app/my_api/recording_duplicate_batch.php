@@ -44,10 +44,10 @@ foreach ($db_result as $domain_info) {
     $api_key = $domain_info['api_key'];
     $curl_path = "https://".$domain_name."/app/my_api/recording_duplicate.php?key=".$api_key;
     $curl_init = curl_init($curl_path);
-    curl_setopt($curl_init,CURLOPT_NOBODY,true);
     curl_setopt($curl_init,CURLOPT_CONNECTTIMEOUT,60);
+    curl_setopt($curl_init,CURLOPT_RETURNTRANSFER,1);
     $curl_response = curl_exec($curl_init);
-    print("Processing $domain_name...\n$curl_response\n");
+    print("Processing $domain_name...via $curl_path\n$curl_response\n");
     curl_close($curl_init);
 }
 
