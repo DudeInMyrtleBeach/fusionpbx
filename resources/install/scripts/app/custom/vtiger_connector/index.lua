@@ -17,5 +17,5 @@ if (session:ready()) then
     if (vtiger_settings == nil) then
         do return end
     end
-    freeswitch.consoleLog("NOTICE", "[vtiger_connector] Got Vtiger URL("..vtiger_settings['url']..") and key("..vtiger_settings['key']..") ");
+    freeswitch.consoleLog("NOTICE", "[vtiger_connector] Got Vtiger URL("..vtiger_settings['url']..") and key("..vtiger_settings['key']..") ")
 end
