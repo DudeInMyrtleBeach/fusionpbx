@@ -1,7 +1,7 @@
 
 -- Prepare SQL string for request
 function form_sql_request(prefix)
-    
+
     local domain_uuid = session:getVariable("domain_uuid")
 
     local sql = "SELECT "..prefix.."_setting_subcategory AS subcategory, "..prefix.."_setting_value AS value FROM v_"..prefix.."_settings"
@@ -16,7 +16,7 @@ end
 
 
 -- Ask database and return results if any
-function process_getting_settings(sql, dbh)
+function process_getting_settings(dbh, sql)
     
     local settings = {}
 
@@ -40,10 +40,10 @@ function process_getting_settings(sql, dbh)
 end
 
 -- Return actual settings for VTiger as table (url, key) or nil
-function get_vtiger_settings(domain_uuid, dbh) 
+function get_vtiger_settings(dbh) 
     
     local sql = form_sql_request("domain")
-    local settings =  process_getting_settings(sql, dbh)
+    local settings =  process_getting_settings(dbh, sql)
 
     if (settings) then
         return settings
