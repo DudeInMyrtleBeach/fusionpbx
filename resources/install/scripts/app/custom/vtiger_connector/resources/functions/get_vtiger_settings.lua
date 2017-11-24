@@ -46,13 +46,16 @@ function get_vtiger_settings(dbh)
     local sql = form_sql_request("domain")
     
     settings, is_full_settings =  process_getting_settings(dbh, sql, settings)
-
     if (is_full_settings) then
         return settings
     end
 
     sql = form_sql_request("default")
+    settings, is_full_settings =  process_getting_settings(dbh, sql, settings)
+    if (is_full_settings) then
+        return settings
+    end
 
-    return process_getting_settings(dbh, sql, settings)
+    return nil
 
 end
