@@ -29,6 +29,6 @@ if (session:ready()) then
         do return end
     end
     freeswitch.consoleLog("NOTICE", "[vtiger_connector] Got Vtiger URL("..vtiger_settings['url']..") and key("..vtiger_settings['key']..") ")
-    session:execute("export","execute_on_ring_"..execute_on_ring_suffix.."=lua app_custom.lua vtiger_connector ringing")
-    session:execute("export","execute_on_answer_"..execute_on_answer_suffix.."=lua app_custom.lua vtiger_connector answer")
+    session:execute("export","execute_on_ring_"..execute_on_ring_suffix.."=lua app_custom.lua vtiger_connector ringing "..vtiger_settings['url'].." "..vtiger_settings['key'])
+    session:execute("export","execute_on_answer_"..execute_on_answer_suffix.."=lua app_custom.lua vtiger_connector answer "..vtiger_settings['url'].." "..vtiger_settings['key'])
 end
