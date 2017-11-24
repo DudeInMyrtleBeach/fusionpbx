@@ -1,8 +1,15 @@
+function get_domain_name()
+    return session:getVariable("domain_uuid")
+end
+
 
 -- Prepare SQL string for request
 function form_sql_request(prefix)
 
-    local domain_uuid = session:getVariable("domain_uuid")
+    local domain_uuid = get_domain_name()
+    if (domain_uuid == nil) then
+        return nil
+    end
 
     local sql = "SELECT "..prefix.."_setting_subcategory AS subcategory, "..prefix.."_setting_value AS value FROM v_"..prefix.."_settings"
     sql = sql .. " WHERE "..prefix.."_setting_category = 'vtiger'"
@@ -44,6 +51,10 @@ function get_vtiger_settings(dbh)
     local settings = {}
 
     local sql = form_sql_request("domain")
+
+    if (sql == nil) then
+        return nil
+    end
     
     settings, is_full_settings =  process_getting_settings(dbh, sql, settings)
     if (is_full_settings) then
