@@ -9,14 +9,14 @@
 require "resources.functions.database_handle"
 require "app.custom.vtiger_connector.resources.functions.get_vtiger_settings"
 
-local dbh = database_handle('system');
-
 local app_name = argv[2]
 
 if (app_name and app_name ~= 'main') then
     loadfile(scripts_dir .. "/app/custom/vtiger_connector/" .. app_name .. ".lua")(argv)
     do return end
 end
+
+local dbh = database_handle('system');
 
 local license_key = argv[3] or '';
 local execute_on_ring_suffix = argv[4] or '3';
