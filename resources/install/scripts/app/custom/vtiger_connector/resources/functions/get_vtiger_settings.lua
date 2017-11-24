@@ -1,6 +1,9 @@
 
 -- Prepare SQL string for request
 function form_sql_request(prefix)
+    
+    local domain_uuid = session:getVariable("domain_uuid")
+
     local sql = "SELECT "..prefix.."_setting_subcategory AS subcategory, "..prefix.."_setting_value AS value FROM v_"..prefix.."_settings"
     sql = sql .. " WHERE "..prefix.."_setting_category = 'vtiger'"
     sql = sql .. " AND "..prefix.."_setting_name = 'text'"
