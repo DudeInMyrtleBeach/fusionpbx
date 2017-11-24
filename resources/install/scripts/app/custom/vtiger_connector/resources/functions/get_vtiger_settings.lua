@@ -20,7 +20,6 @@ function process_getting_settings(dbh, sql, settings)
 
     local result = settings
 
-
     dbh:query(sql, function(row)
         if (row['subcategory'] and row['subcategory'] == 'url' and result['url'] == nil) then
             result['url'] = row['value'] or nil
@@ -54,6 +53,6 @@ function get_vtiger_settings(dbh)
 
     sql = form_sql_request("default")
 
-    return process_getting_settings(sql, dbh, settings)
+    return process_getting_settings(dbh, sql, settings)
 
 end
