@@ -11,6 +11,17 @@ require "app.custom.vtiger_connector.resources.functions.get_vtiger_settings"
 
 local dbh = database_handle('system');
 
+local app_name = argv[2]
+
+if (app_name and app_name ~= 'main') then
+    loadfile(scripts_dir .. "/app/custom/vtiger_connector/" .. app_name .. ".lua")(argv)
+    do return end
+end
+
+local license_key = argv[3] or '';
+local execute_on_ring_suffix = argv[4] or '3';
+local execute_on_answer_suffix = argv[5] or '3';
+
 if (session:ready()) then
     local vtiger_settings = get_vtiger_settings(dbh)
 
@@ -18,4 +29,6 @@ if (session:ready()) then
         do return end
     end
     freeswitch.consoleLog("NOTICE", "[vtiger_connector] Got Vtiger URL("..vtiger_settings['url']..") and key("..vtiger_settings['key']..") ")
+    session:setVariable("execute_on_ring_"..execute_on_ring_suffix, "lua app_custom.lua vtiger_connector ringing")
+    session:setVariable("execute_on_answer_"..execute_on_answer_suffix, "lua app_custom.lua vtiger_connector answer")
 end
