@@ -22,10 +22,10 @@ function process_getting_settings(dbh, sql, settings)
 
 
     dbh:query(sql, function(row)
-        if (row['subcategory'] and row['subcategory'] == 'url') then
+        if (row['subcategory'] and row['subcategory'] == 'url' and result['url'] == nil) then
             result['url'] = row['value'] or nil
         end
-        if (row['subcategory'] and row['subcategory'] == 'api_key') then
+        if (row['subcategory'] and row['subcategory'] == 'api_key' and result['key'] == nil) then
             result['key'] = row['value'] or nil
         end
     end);
