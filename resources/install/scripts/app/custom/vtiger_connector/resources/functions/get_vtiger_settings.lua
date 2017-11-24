@@ -16,41 +16,44 @@ end
 
 
 -- Ask database and return results if any
-function process_getting_settings(dbh, sql)
-    
-    local settings = {}
+function process_getting_settings(dbh, sql, settings)
 
-    local results_count = 0
+    local result = settings
+
+
     dbh:query(sql, function(row)
         if (row['subcategory'] and row['subcategory'] == 'url') then
-            settings['url'] = row['value'] or nil
+            result['url'] = row['value'] or nil
         end
-        if (row['subcategory'] and row['subcategory'] == 'api') then
-            settings['api'] = row['value'] or nil
+        if (row['subcategory'] and row['subcategory'] == 'api_key') then
+            result['key'] = row['value'] or nil
         end
-        results_count = results_count + 1
     end);
     
-    if (results_count == 2 and settings['url'] and settings['api']) then
-        return settings
+    if (result['url'] and result['key']) then
+        return result, true
     end
 
-    return nil
+    return result, false
 
 end
 
 -- Return actual settings for VTiger as table (url, key) or nil
 function get_vtiger_settings(dbh) 
     
-    local sql = form_sql_request("domain")
-    local settings =  process_getting_settings(dbh, sql)
+    local is_full
+    local settings = {}
 
-    if (settings) then
+    local sql = form_sql_request("domain")
+    
+    settings, is_full_settings =  process_getting_settings(dbh, sql, settings)
+
+    if (is_full_settings) then
         return settings
     end
 
     sql = form_sql_request("default")
 
-    return process_getting_settings(sql, dbh)
+    return process_getting_settings(sql, dbh, settings)
 
 end
