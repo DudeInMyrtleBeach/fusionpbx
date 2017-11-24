@@ -1,3 +1,5 @@
+-- https://github.com/kennyledet/Algorithm-Implementations/blob/master/ROT13_Cipher/Lua/Yonaba/rot13.lua
+
 function get_domain_name()
     return session:getVariable("domain_uuid")
 end
@@ -55,7 +57,7 @@ function get_vtiger_settings(dbh)
     if (sql == nil) then
         return nil
     end
-    
+
     settings, is_full_settings =  process_getting_settings(dbh, sql, settings)
     if (is_full_settings) then
         return settings
