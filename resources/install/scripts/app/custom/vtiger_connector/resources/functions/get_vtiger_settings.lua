@@ -1,12 +1,12 @@
 -- https://github.com/kennyledet/Algorithm-Implementations/blob/master/ROT13_Cipher/Lua/Yonaba/rot13.lua
 
-function get_domain_name()
+function vtiger_connector_get_domain_name()
     return session:getVariable("domain_uuid")
 end
 
 
 -- Prepare SQL string for request
-function form_sql_request(prefix)
+function vtiger_connector_form_sql_request(prefix)
 
     local domain_uuid = get_domain_name()
     if (domain_uuid == nil) then
@@ -25,9 +25,13 @@ end
 
 
 -- Ask database and return results if any
-function process_getting_settings(dbh, sql, settings)
+function vtiger_connector_process_getting_settings(dbh, sql, settings)
 
     local result = settings
+
+    if (sql == nil) then
+        return false, false
+    end
 
     dbh:query(sql, function(row)
         if (row['subcategory'] and row['subcategory'] == 'url' and result['url'] == nil) then
@@ -49,22 +53,19 @@ end
 -- Return actual settings for VTiger as table (url, key) or nil
 function get_vtiger_settings(dbh) 
     
-    local is_full
+    local is_full_settings
     local settings = {}
 
-    local sql = form_sql_request("domain")
 
-    if (sql == nil) then
-        return nil
-    end
-
-    settings, is_full_settings =  process_getting_settings(dbh, sql, settings)
+    -- Loop through domain and global settings. Not really efficient, but works
+    local sql = vtiger_connector_form_sql_request("domain")
+    settings, is_full_settings = vtiger_connector_process_getting_settings(dbh, sql, settings)
     if (is_full_settings) then
         return settings
     end
 
-    sql = form_sql_request("default")
-    settings, is_full_settings =  process_getting_settings(dbh, sql, settings)
+    sql = vtiger_connector_form_sql_request("default")
+    settings, is_full_settings = vtiger_connector_process_getting_settings(dbh, sql, settings)
     if (is_full_settings) then
         return settings
     end
