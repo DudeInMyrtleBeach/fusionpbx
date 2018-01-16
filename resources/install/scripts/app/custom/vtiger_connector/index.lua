@@ -29,7 +29,7 @@ if (session:ready()) then
     if (vtiger_settings == nil) then
         do return end
     end
-    api = freeswitch.API()
+    
     freeswitch.consoleLog("NOTICE", "[vtiger_connector] Got Vtiger URL("..vtiger_settings['url']..") and key("..vtiger_settings['key']..") ")
     session:execute("export","nolocal:execute_on_ring_"..execute_on_ring_suffix.."=lua app_custom.lua vtiger_connector ringing "..vtiger_settings['url'].." "..vtiger_settings['key'])
     session:execute("export","nolocal:execute_on_answer_"..execute_on_answer_suffix.."=lua app_custom.lua vtiger_connector answer "..vtiger_settings['url'].." "..vtiger_settings['key'])
