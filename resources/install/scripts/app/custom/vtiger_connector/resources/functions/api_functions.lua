@@ -12,7 +12,8 @@ function vtiger_api_call(method, credentials, data, is_return)
     if (api_data['debug']) then
         freeswitch.consoleLog("NOTICE", "[vtiger_connector][call_"..method.."] "..api_string)
     else
-        api:executeString("curl "..api_string)
+        local api_response = api:execute("curl ", api_string)
+        freeswitch.consoleLog("NOTICE", "[vtiger_connector][call_"..method.."] Response: "..api_response)
     end
 
 end
