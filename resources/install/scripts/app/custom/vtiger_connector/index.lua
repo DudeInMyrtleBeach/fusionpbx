@@ -31,8 +31,8 @@ if (session:ready()) then
     end
     api = freeswitch.API()
     freeswitch.consoleLog("NOTICE", "[vtiger_connector] Got Vtiger URL("..vtiger_settings['url']..") and key("..vtiger_settings['key']..") ")
-    session:execute("export","execute_on_ring_"..execute_on_ring_suffix.."=lua app_custom.lua vtiger_connector ringing "..vtiger_settings['url'].." "..vtiger_settings['key'])
-    session:execute("export","execute_on_answer_"..execute_on_answer_suffix.."=lua app_custom.lua vtiger_connector answer "..vtiger_settings['url'].." "..vtiger_settings['key'])
+    session:execute("export","nolocal:execute_on_ring_"..execute_on_ring_suffix.."=lua app_custom.lua vtiger_connector ringing "..vtiger_settings['url'].." "..vtiger_settings['key'])
+    session:execute("export","nolocal:execute_on_answer_"..execute_on_answer_suffix.."=lua app_custom.lua vtiger_connector answer "..vtiger_settings['url'].." "..vtiger_settings['key'])
 
     local call_start_data = {}
     call_start_data['uuid'] = session:getVariable('call_uuid') or ""
@@ -45,7 +45,8 @@ if (session:ready()) then
 
     call_start_data['src'] = src
     call_start_data['dst'] = dst
-    call_start_data['direction'] = get_call_direction(src, dst)
+    call_start_data['direction'] = get_call_direction(src['number'], dst)
+    call_start_data['debug'] = true
 
     vtiger_api_call_start(vtiger_settings, call_start_data)
 end
