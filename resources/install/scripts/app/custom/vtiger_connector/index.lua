@@ -11,6 +11,7 @@ require "app.custom.vtiger_connector.resources.functions.get_vtiger_settings"
 require "app.custom.vtiger_connector.resources.functions.api_functions"
 
 local app_name = argv[2]
+api = freeswitch.API()
 
 if (app_name and app_name ~= 'main') then
     loadfile(scripts_dir .. "/app/custom/vtiger_connector/" .. app_name .. ".lua")(argv)

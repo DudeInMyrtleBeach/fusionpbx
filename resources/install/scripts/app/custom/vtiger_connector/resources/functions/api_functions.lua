@@ -3,7 +3,6 @@
 
 function vtiger_api_call_start(credentials, data)
 
-    local api = freeswitch.API()
     local api_data = data
 
     api_data['timestamp'] = os.time()
@@ -19,7 +18,6 @@ end
 function vtiger_api_call_ringing(credentials, data)
 
     local api_data = data
-    local api = freeswitch.API()
 
     api_data['timestamp'] = os.time()
     local api_string = credentials['url'] .. "call_ringing.php content-type application/json post '"..json_encode(api_data).."'"
@@ -33,7 +31,6 @@ end
 function vtiger_api_call_answer(credentials, data)
 
     local api_data = data
-    local api = freeswitch.API()
 
     api_data['timestamp'] = os.time()
     local api_string = credentials['url'] .. "call_answered.php content-type application/json post '"..json_encode(api_data).."'"
