@@ -46,7 +46,7 @@ if (session:ready()) then
     call_start_data['src'] = src
     call_start_data['dst'] = dst
     call_start_data['direction'] = get_call_direction(src['number'], dst)
-    call_start_data['debug'] = true
+    --call_start_data['debug'] = true
 
     vtiger_api_call_start(vtiger_settings, call_start_data)
 end
