@@ -8,7 +8,7 @@
 
 require "resources.functions.database_handle"
 require "app.custom.vtiger_connector.resources.functions.get_vtiger_settings"
-require "app.custom.vtiger_connector.resources.functions.prepare_json"
+require "app.custom.vtiger_connector.resources.functions.api_functions"
 
 local app_name = argv[2]
 
@@ -29,7 +29,23 @@ if (session:ready()) then
     if (vtiger_settings == nil) then
         do return end
     end
+    api = freeswitch.API()
     freeswitch.consoleLog("NOTICE", "[vtiger_connector] Got Vtiger URL("..vtiger_settings['url']..") and key("..vtiger_settings['key']..") ")
     session:execute("export","execute_on_ring_"..execute_on_ring_suffix.."=lua app_custom.lua vtiger_connector ringing "..vtiger_settings['url'].." "..vtiger_settings['key'])
     session:execute("export","execute_on_answer_"..execute_on_answer_suffix.."=lua app_custom.lua vtiger_connector answer "..vtiger_settings['url'].." "..vtiger_settings['key'])
+
+    local call_start_data = {}
+    call_start_data['uuid'] = session:getVariable('call_uuid') or ""
+
+    local src = {}
+    src['name'] = session:getVariable('caller_id_name') or ""
+    src['number'] = session:getVariable('caller_id_number') or ""
+
+    local dst = session:getVariable('destination_number') or ""
+
+    call_start_data['src'] = src
+    call_start_data['dst'] = dst
+    call_start_data['direction'] = get_call_direction(src, dst)
+
+    vtiger_api_call_start(vtiger_settings, call_start_data)
 end
