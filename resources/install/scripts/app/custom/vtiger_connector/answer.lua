@@ -1,11 +1,10 @@
 if (session:ready()) then
 	local credentials = {}
-	local _, _, url, key = argv
-	if (url == nil or url == nil) then
+	if (argv[3] == nil or argv[4] == nil) then
 		freeswitch.consoleLog("WARNING", "[vtiger_connector][answer] Can't get URL or key")
 		do return end
 	end
-	credentials['url'], credentials['key'] = url, key
+	credentials['url'], credentials['key'] = argv[3], argv[4]
 	local dialed_user = session:getVariable("dialed_user")
 	if (dialed_user == nil) then
 		freeswitch.consoleLog("WARNING", "[vtiger_connector][answer] Can't get dialed user")
