@@ -11,7 +11,6 @@ if (session:ready()) then
 		do return end
 	end
 	local call_data = {}
-	call_data['uuid'] = session:getVariable('call_uuid') or ""
     call_data['number'] = dialed_user
     --call_data['debug'] = true
 

@@ -7,6 +7,7 @@ function vtiger_api_call(method, credentials, data, is_return)
 
     api_data['timestamp'] = os.time()
     api_data['uuid'] = session:getVariable('call_uuid') or ""
+    
     local api_string = credentials['url'] .. "call_"..method..".php content-type application/json post '"..json_encode(api_data).."'"
     if (api_data['debug']) then
         freeswitch.consoleLog("NOTICE", "[vtiger_connector][call_"..method.."] "..api_string)
