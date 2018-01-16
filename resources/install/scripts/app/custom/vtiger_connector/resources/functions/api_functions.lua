@@ -1,44 +1,19 @@
 -- data is provided by this funstions
 -- timestamp
 
-function vtiger_api_call_start(credentials, data)
+function vtiger_api_call(method, credentials, data, is_return)
 
     local api_data = data
 
     api_data['timestamp'] = os.time()
-    local api_string = credentials['url'] .. "call_start.php content-type application/json post '"..json_encode(api_data).."'"
+    api_data['uuid'] = session:getVariable('call_uuid') or ""
+    local api_string = credentials['url'] .. "call_"..method..".php content-type application/json post '"..json_encode(api_data).."'"
     if (api_data['debug']) then
-        freeswitch.consoleLog("NOTICE", "[vtiger_connector][call_start] "..api_string)
+        freeswitch.consoleLog("NOTICE", "[vtiger_connector][call_"..method.."] "..api_string)
     else
-        api:executeString("bgapi culr "..api_string)
+        api:executeString("curl "..api_string)
     end
 
-end
-
-function vtiger_api_call_ringing(credentials, data)
-
-    local api_data = data
-
-    api_data['timestamp'] = os.time()
-    local api_string = credentials['url'] .. "call_ringing.php content-type application/json post '"..json_encode(api_data).."'"
-    if (api_data['debug']) then
-        freeswitch.consoleLog("NOTICE", "[vtiger_connector][call_ringing] "..api_string)
-    else
-        api:executeString("bgapi culr "..api_string)
-    end
-end
-
-function vtiger_api_call_answer(credentials, data)
-
-    local api_data = data
-
-    api_data['timestamp'] = os.time()
-    local api_string = credentials['url'] .. "call_answered.php content-type application/json post '"..json_encode(api_data).."'"
-    if (api_data['debug']) then
-        freeswitch.consoleLog("NOTICE", "[vtiger_connector][call_answered] "..api_string)
-    else
-        api:executeString("bgapi culr "..api_string)
-    end
 end
 
 -- Prepare JSON strings

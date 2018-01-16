@@ -15,6 +15,6 @@ if (session:ready()) then
     call_data['number'] = dialed_user
     --call_data['debug'] = true
 
-	vtiger_api_call_answer(credentials, call_data)
+	vtiger_api_call("answered", credentials, call_data)
 
 end

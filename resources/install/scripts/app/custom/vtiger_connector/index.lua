@@ -36,8 +36,7 @@ if (session:ready()) then
     session:execute("export","nolocal:execute_on_answer_"..execute_on_answer_suffix.."=lua app_custom.lua vtiger_connector answer "..vtiger_settings['url'].." "..vtiger_settings['key'])
 
     local call_start_data = {}
-    call_start_data['uuid'] = session:getVariable('call_uuid') or ""
-
+    
     local src = {}
     src['name'] = session:getVariable('caller_id_name') or ""
     src['number'] = session:getVariable('caller_id_number') or ""
@@ -49,5 +48,5 @@ if (session:ready()) then
     call_start_data['direction'] = get_call_direction(src['number'], dst)
     --call_start_data['debug'] = true
 
-    vtiger_api_call_start(vtiger_settings, call_start_data)
+    vtiger_api_call("start", vtiger_settings, call_start_data)
 end
