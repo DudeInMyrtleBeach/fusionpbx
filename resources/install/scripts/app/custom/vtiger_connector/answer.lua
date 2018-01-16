@@ -12,7 +12,8 @@ if (session:ready()) then
 	end
 	local call_data = {}
 	call_data['uuid'] = session:getVariable('call_uuid') or ""
-	call_data['number'] = dialed_user
+    call_data['number'] = dialed_user
+    call_data['debug'] = true
 
 	vtiger_api_call_answer(credentials, call_data)
 

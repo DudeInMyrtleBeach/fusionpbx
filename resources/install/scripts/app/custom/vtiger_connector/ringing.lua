@@ -13,6 +13,7 @@ if (session:ready()) then
 	local call_data = {}
 	call_data['uuid'] = session:getVariable('call_uuid') or ""
 	call_data['number'] = dialed_user
+	call_data['debug'] = true
 
 	vtiger_api_call_ringing(credentials, call_data)
 
