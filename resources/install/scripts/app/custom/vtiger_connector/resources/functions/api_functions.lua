@@ -26,7 +26,6 @@ function vtiger_api_call_ringing(credentials, data)
     else
         api:executeString("bgapi culr "..api_string)
     end
-
 end
 
 function vtiger_api_call_answer(credentials, data)
