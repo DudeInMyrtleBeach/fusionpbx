@@ -34,7 +34,7 @@ function ringing_answered_call(type, argv)
     call_data['number'] = dialed_user
     --call_data['debug'] = true
 
-	vtiger_api_call("type", credentials, call_data)
+	vtiger_api_call(type, credentials, call_data)
 end
 
 -- Prepare JSON strings
