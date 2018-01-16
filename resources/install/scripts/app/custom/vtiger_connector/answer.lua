@@ -1,15 +1,14 @@
-require "app.custom.vtiger_connector.resources.functions.api_functions"
-
 if (session:ready()) then
 	local credentials = {}
-	local _, _, credentials['url'], credentials['key'] = argv
-	if (credentials['url'] == nil or credentials['key'] == nil) then
-		freeswitch.consoleLog("WARNING", "[vtiger_connector][answered] Can't get URL or key")
+	local _, _, url, key = argv
+	if (url == nil or url == nil) then
+		freeswitch.consoleLog("WARNING", "[vtiger_connector][answer] Can't get URL or key")
 		do return end
 	end
+	credentials['url'], credentials['key'] = url, key
 	local dialed_user = session:getVariable("dialed_user")
 	if (dialed_user == nil) then
-		freeswitch.consoleLog("WARNING", "[vtiger_connector][answered] Can't get dialed user")
+		freeswitch.consoleLog("WARNING", "[vtiger_connector][answer] Can't get dialed user")
 		do return end
 	end
 	local call_data = {}
