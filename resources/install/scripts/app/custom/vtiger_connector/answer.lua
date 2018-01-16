@@ -1,3 +1,5 @@
+require "app.custom.vtiger_connector.resources.functions.api_functions"
+
 if (session:ready()) then
 	local credentials = {}
 	local _, _, credentials['url'], credentials['key'] = argv
