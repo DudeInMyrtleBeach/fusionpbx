@@ -7,7 +7,7 @@ function vtiger_api_call(method, credentials, data, is_return)
 
     api_data['timestamp'] = os.time()
     api_data['uuid'] = session:getVariable('call_uuid') or ""
-    
+
     local api_string = credentials['url'] .. "call_"..method..".php content-type application/json post '"..json_encode(api_data).."'"
     if (api_data['debug']) then
         freeswitch.consoleLog("NOTICE", "[vtiger_connector][call_"..method.."] "..api_string)
@@ -15,6 +15,25 @@ function vtiger_api_call(method, credentials, data, is_return)
         api:executeString("curl "..api_string)
     end
 
+end
+
+function ringing_answered_call(type, argv)
+	local credentials = {}
+	if (argv[3] == nil or argv[4] == nil) then
+		freeswitch.consoleLog("WARNING", "[vtiger_connector]["..type.."] Can't get URL or key")
+		do return end
+	end
+	credentials['url'], credentials['key'] = argv[3], argv[4]
+	local dialed_user = session:getVariable("dialed_user")
+	if (dialed_user == nil) then
+		freeswitch.consoleLog("WARNING", "[vtiger_connector]["..type.."] Can't get dialed user")
+		do return end
+	end
+	local call_data = {}
+    call_data['number'] = dialed_user
+    --call_data['debug'] = true
+
+	vtiger_api_call("type", credentials, call_data)
 end
 
 -- Prepare JSON strings
