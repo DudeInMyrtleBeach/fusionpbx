@@ -41,10 +41,6 @@ function vtiger_api_call_answer(credentials, data)
     end
 end
 
-
-function vtiger_api_call_ringing(credentials, data)
-end
-
 -- Prepare JSON strings
 function json_encode(data)
     local function string(o)
