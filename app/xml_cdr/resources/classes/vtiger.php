@@ -69,12 +69,15 @@ if (!class_exists('vtiger_connector')) {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
             curl_setopt($ch, CURLOPT_HEADER, true);
+            curl_setopt($ch, CURL_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',
                                                     'Content-Length: ' . strlen($data_string)
                                                 ));
 
-            curl_exec($ch);
+            $resp = curl_exec($ch);
             curl_close($ch);
+
+            file_put_contents('/tmp/api_vtiger.log', " -> ".$this->$url.'/call_end.php'. " Req:".$data_string." Resp:".$resp."\n", FILE_APPEND);
 
         }
     }
