@@ -443,6 +443,26 @@
 				unset($db2->result);
 
 			}
+		// Call VTiger API
+			if (strlen($start_stamp) > 0) {
+				$vtiger_url = isset($_SESSION['vtiger']['url']) ? $_SESSION['vtiger']['url'] : NULL;
+				$vtiger_api_key = isset($_SESSION['vtiger']['api_key']) ? $_SESSION['vtiger']['api_key'] : NULL;
+
+				if (isset($database->$fields['recording_file']) and isset($_SESSION['vtiger']['record_path'])) { 
+					$vtiger_record_path = urlencode($_SESSION['vtiger']['record_path'].$recording_relative_path);
+				} else {
+					$vtiger_record_path = NULL;
+				}
+
+				$vtiger_api_call = new vtiger_connector($vtiger_url, $vtiger_api_key, $database->$fields, $vtiger_record_path);
+				if ($vtiger_api_call) {
+					$vtiger_api_call->send();
+				}
+				unset($vtiger_url);
+				unset($vtiger_api_key);
+				unset($vtiger_record_path);
+				unset($vtiger_api_call);
+			}
 
 		//insert xml_cdr into the db
 			if (strlen($start_stamp) > 0) {
