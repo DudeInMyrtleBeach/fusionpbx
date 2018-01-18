@@ -1,3 +1,3 @@
 if (session:ready()) then
-	ringing_answered_call("ringing", argv)
+	ringing_answered_call("ringing")
 end

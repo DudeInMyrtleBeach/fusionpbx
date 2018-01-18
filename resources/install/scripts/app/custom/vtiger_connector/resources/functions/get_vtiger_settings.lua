@@ -27,11 +27,21 @@ function process_getting_settings(dbh, sql, settings)
         if (row['subcategory'] and row['subcategory'] == 'api_key' and result['key'] == nil) then
             result['key'] = row['value'] or nil
         end
+        if (row['subcategory'] and row['subcategory'] == 'record_path' and result['record_path'] == nil) then
+            result['record_path'] = row['value'] or nil
+        end
     end);
 
     if (result['url'] and result['key']) then
         if (result['url']:sub(-1) ~= '/' ) then
             result['url'] = result['url'] .. "/"
+        end
+        if (result['record_path']) then 
+            if (result['record_path']:sub(-1) ~= '/') then
+                result['record_path'] = result['record_path'] .. "/"
+            end
+        else 
+            result['record_path'] = ""
         end
         return result, true
     end
@@ -49,7 +59,7 @@ function get_vtiger_settings(dbh)
     local sql = form_sql_request("domain")
 
     settings, is_full_settings =  process_getting_settings(dbh, sql, settings)
-    if (is_full_settings) then
+    if (is_full_settings and settings['record_path'] ~= '') then
         return settings
     end
 

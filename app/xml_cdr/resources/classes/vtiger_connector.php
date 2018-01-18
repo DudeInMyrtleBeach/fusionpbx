@@ -61,6 +61,14 @@ if (!class_exists('vtiger_connector')) {
             
             return true;
         }
+
+        public function __destruct() {
+			if (isset($this)) foreach ($this as $key => $value) {
+				unset($this->$key);
+			}
+		}
+
+
         public function send() {
             
             $data_string = json_encode($this->$fields);

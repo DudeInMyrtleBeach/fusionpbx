@@ -31,10 +31,12 @@ if (session:ready()) then
         do return end
     end
     
-    freeswitch.consoleLog("NOTICE", "[vtiger_connector] Got Vtiger URL("..vtiger_settings['url']..") and key("..vtiger_settings['key']..") ")
-    session:execute("export","nolocal:execute_on_ring_"..execute_on_ring_suffix.."=lua app_custom.lua vtiger_connector ringing "..vtiger_settings['url'].." "..vtiger_settings['key'])
-    session:execute("export","nolocal:execute_on_answer_"..execute_on_answer_suffix.."=lua app_custom.lua vtiger_connector answer "..vtiger_settings['url'].." "..vtiger_settings['key'])
-
+    freeswitch.consoleLog("NOTICE", "[vtiger_connector] Got Vtiger URL("..vtiger_settings['url']..") and key("..vtiger_settings['key']..")")
+    session:execute("export", "vtiger_url="..enc64(vtiger_settings['url']))
+    session:execute("export", "vtiger_api_key="..enc64(vtiger_settings['key']))
+    session:execute("export", "vtiger_record_path="..enc64(vtiger_settings['record_path']))    
+    session:execute("export","nolocal:execute_on_ring_"..execute_on_ring_suffix.."=lua app_custom.lua vtiger_connector ringing")
+    session:execute("export","nolocal:execute_on_answer_"..execute_on_answer_suffix.."=lua app_custom.lua vtiger_connector answer")
     local call_start_data = {}
     
     local src = {}
