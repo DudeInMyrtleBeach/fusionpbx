@@ -8,7 +8,7 @@ if (!class_exists('vtiger_connector')) {
         private $fields;
 
         public function __construct($url, $key, $database_fields, $record_path) {
-            if (!($url and $key)) {
+            if (!(stlen($url) == 0 and strlen($key) == 0)) {
                 return false;
             }
 
@@ -78,6 +78,9 @@ if (!class_exists('vtiger_connector')) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
             curl_setopt($ch, CURLOPT_HEADER, true);
             curl_setopt($ch, CURL_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',
                                                     'Content-Length: ' . strlen($data_string)
                                                 ));
