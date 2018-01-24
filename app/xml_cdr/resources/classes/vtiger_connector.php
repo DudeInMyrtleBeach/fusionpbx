@@ -8,7 +8,7 @@ if (!class_exists('vtiger_connector')) {
         private $fields;
 
         public function __construct($url, $key, $database_fields, $record_path) {
-            if (!(stlen($url) == 0 and strlen($key) == 0)) {
+            if (stlen($url) == 0 or strlen($key) == 0) {
                 return false;
             }
 
