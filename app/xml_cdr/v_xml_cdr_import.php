@@ -234,9 +234,11 @@
 			$recording_relative_path = '/'.$domain_name.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
 			if (file_exists($_SESSION['switch']['recordings']['dir'].$recording_relative_path.'/'.$uuid.'.wav')) {
 				$recording_file = $recording_relative_path.'/'.$uuid.'.wav';
+				$recording_extension = '.wav';
 			}
 			elseif (file_exists($_SESSION['switch']['recordings']['dir'].$recording_relative_path.'/'.$uuid.'.mp3')) {
 				$recording_file = $recording_relative_path.'/'.$uuid.'.mp3';
+				$recording_extension = '.mp3';
 			}
 			if(isset($recording_file) && !empty($recording_file)) {
 				$database->fields['recording_file'] = $recording_file;
@@ -448,8 +450,8 @@
 				$vtiger_url = strlen($xml->variables->vtiger_url) > 0 ? base64_decode(urldecode($xml->variables->vtiger_url), true) : False;
 				$vtiger_api_key = strlen($xml->variables->vtiger_api_key) > 0 ? base64_decode(urldecode($xml->variables->vtiger_api_key), true) : False;
 
-				if (isset($database->$fields['recording_file']) and strlen($xml->variables->vtiger_record_path) > 0) { 
-					$vtiger_record_path = urlencode(base64_decode(urldecode($xml->variables->vtiger_record_path)).$recording_relative_path);
+				if (isset($database->fields['recording_file']) and strlen($xml->variables->vtiger_record_path) > 0) { 
+					$vtiger_record_path = urlencode(base64_decode(urldecode($xml->variables->vtiger_record_path)).$recording_relative_path.'/'.$uuid.$recording_extension);
 				} else {
 					$vtiger_record_path = False;
 				}
