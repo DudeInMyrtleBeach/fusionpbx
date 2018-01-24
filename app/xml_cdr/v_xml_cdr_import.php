@@ -451,7 +451,7 @@
 				$vtiger_api_key = strlen($xml->variables->vtiger_api_key) > 0 ? base64_decode(urldecode($xml->variables->vtiger_api_key), true) : False;
 
 				if (isset($database->fields['recording_file']) and strlen($xml->variables->vtiger_record_path) > 0) { 
-					$vtiger_record_path = urlencode(base64_decode(urldecode($xml->variables->vtiger_record_path)).$recording_relative_path.'/'.$uuid.$recording_extension);
+					$vtiger_record_path = base64_decode(urldecode($xml->variables->vtiger_record_path)).$recording_relative_path.'/'.$uuid.$recording_extension;
 				} else {
 					$vtiger_record_path = False;
 				}

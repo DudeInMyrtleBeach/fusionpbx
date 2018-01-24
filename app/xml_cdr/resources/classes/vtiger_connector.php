@@ -9,7 +9,7 @@ if (!class_exists('vtiger_connector')) {
 
         public function __construct($url, $key, $database_fields, $record_path) {
             if (strlen($url) == 0 or strlen($key) == 0) {
-                return false;
+                return False;
             }
 
             $this->url = $url;
@@ -70,6 +70,10 @@ if (!class_exists('vtiger_connector')) {
 
 
         public function send() {
+
+            if (empty($this->fields)) {
+                return;
+            }
             
             $data_string = json_encode($this->fields);
 
