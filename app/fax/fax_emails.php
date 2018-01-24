@@ -157,10 +157,12 @@ if (sizeof($result) != 0) {
 			//get authorized sender(s)
 			if (substr_count($fax_email_outbound_authorized_senders, ',') > 0) {
 				$authorized_senders = explode(',', $fax_email_outbound_authorized_senders);
+				$authorized_senders = array_map("strtolower", $authorized_senders);
 			}
 			else {
-				$authorized_senders[] = $fax_email_outbound_authorized_senders;
+				$authorized_senders[] = strtolower($fax_email_outbound_authorized_senders);
 			}
+
 
 			sort($emails); // oldest first
 			foreach ($emails as $email_id) {
@@ -172,8 +174,25 @@ if (sizeof($result) != 0) {
 
 				//check sender
 				$sender_authorized = false;
+				$current_sender = strtolower($metadata[0]['from']);
+
 				foreach ($authorized_senders as $authorized_sender) {
-					if (substr_count($metadata[0]['from'], $authorized_sender) > 0) { $sender_authorized = true; }
+
+					if (substr_count($authorized_sender, '*') > 0) {
+						// Pattern found
+						$authorized_sender_pattern = str_replace('.', '\.', $authorized_sender);
+						$authorized_sender_pattern = str_replace('+', '\+', $authorized_sender);
+						$authorized_sender_pattern = "/".str_replace('*', '.*', $authorized_sender)."/";
+						if (preg_match($authorized_sender_pattern, $current_sender)) {
+							$sender_authorized = true;
+							break;
+						}
+					}
+
+					if (strtolower($current_sender) == $authorized_sender)  { 
+						$sender_authorized = true; 
+						break;
+					}
 				}
 
 				if ($sender_authorized) {
@@ -244,7 +263,7 @@ if (sizeof($result) != 0) {
 							//block unauthorized files
 								if (!$fax_allowed_extension['.' . $fax_file_extension]) { continue; } 
 							//support only attachments
-								if($attachment['disposition'] != 'attachment'){ continue; } 
+								if(strtolower($attachment['disposition']) != 'attachment'){ continue; } 
 
 							//store attachment in local fax temp folder
 								$local_filepath = $fax_dir.'/'.$fax_extension.'/temp/'.$attachment['name'];

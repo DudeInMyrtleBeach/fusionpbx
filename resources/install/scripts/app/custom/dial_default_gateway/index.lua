@@ -32,6 +32,9 @@ if (session:ready()) then
             gateway_uuid = row["gateway_uuid"] and row["gateway_uuid"] or nil
             results_count = results_count + 1
         end);
+        
+        dbh:release()
+
         if (gateway_uuid ~= nil and results_count == 1) then
             freeswitch.consoleLog("NOTICE", "[dial_default_gateway] Dialing through gateway "..gateway_uuid.."\n");
             local callee_id_number = session:getVariable("callee_id_number")
@@ -41,7 +44,11 @@ if (session:ready()) then
             freeswitch.consoleLog("NOTICE", "[dial_default_gateway] Cannot get gateway for domain("..results_count..")\n");
         end
     else
+        dbh:release()
         freeswitch.consoleLog("NOTICE", "[dial_default_gateway] Cannot get domain_uuid or domain_id\n");
         session:execute('info')
     end
+
+else 
+    dbh:release()
 end
