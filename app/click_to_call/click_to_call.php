@@ -50,25 +50,26 @@ else {
 
 if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])) {
 	//retrieve submitted variables
-		$src = check_str($_REQUEST['src']);
-		$src_cid_name = check_str($_REQUEST['src_cid_name']);
-		$src_cid_number = check_str($_REQUEST['src_cid_number']);
+        $src = check_str($_REQUEST['src']);
+        $dest = check_str($_REQUEST['dest']);
 
-		$dest = check_str($_REQUEST['dest']);
-		$dest_cid_name = check_str($_REQUEST['dest_cid_name']);
-		$dest_cid_number = check_str($_REQUEST['dest_cid_number']);
+        $src_cid_name = isset($_REQUEST['src_cid_name']) ? check_str($_REQUEST['src_cid_name']) : $dest;
+        $src_cid_number = isset($_REQUEST['src_cid_number']) ? check_str($_REQUEST['src_cid_number']) : $dest;
 
-		$auto_answer = check_str($_REQUEST['auto_answer']); //true,false
-		$rec = check_str($_REQUEST['rec']); //true,false
-		$ringback = check_str($_REQUEST['ringback']);
-		$context = $_SESSION['context'];
+        $dest_cid_name = isset($_REQUEST['dest_cid_name']) ? check_str($_REQUEST['dest_cid_name']) : $dest;
+        $dest_cid_number = isset($_REQUEST['dest_cid_number']) ? check_str($_REQUEST['dest_cid_number']) : $dest;
+
+        $auto_answer = isset($_REQUEST['auto_answer']) ? True : False;
+        $rec = isset($_REQUEST['rec']) ? True : False;
+        $ringback = check_str($_REQUEST['ringback']);
+        $context = isset($_SESSION['context']) ? check_str($_SESSION['context']) : $_SESSION['domain_name'];
 
 	//clean up variable values
 		$src = str_replace(array('.','(',')','-',' '), '', $src);
 		$dest = (strpbrk($dest, '@') != FALSE) ? str_replace(array('(',')',' '), '', $dest) : str_replace(array('.','(',')','-',' '), '', $dest); //don't strip periods or dashes in sip-uri calls, only phone numbers
 
 	//adjust variable values
-		$sip_auto_answer = ($auto_answer == "true") ? ",sip_auto_answer=true" : null;
+		$sip_auto_answer = ($auto_answer) ? ",sip_auto_answer=true" : null;
 
 	//mozilla thunderbird TBDialout workaround (seems it can only handle the first %NUM%)
 		$dest = ($dest == "%NUM%") ? $src_cid_number : $dest;
@@ -175,6 +176,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 			}
 			echo "<div align='center'><br />".$result."<br /><br /></div>\n";
 		}
+	exit(0); // We don't need to show any on click_to_call request
 }
 
 //show html form
